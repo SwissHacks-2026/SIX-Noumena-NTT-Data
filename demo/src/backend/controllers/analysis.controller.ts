@@ -3,7 +3,7 @@ import { PhoeniqsService } from "../services/phoeniqs.service";
 import { SixService } from "../services/six.service";
 import { NewsAIService } from "../services/newsai.service";
 import { analysisRequestSchema } from "../../shared/schemas";
-import { AnalysisResult, ApiResponse } from "../../shared/types";
+import { LegacyAnalysisResult as AnalysisResult, ApiResponse } from "../../shared/types";
 
 export class AnalysisController {
   private phoeniqsService: PhoeniqsService;

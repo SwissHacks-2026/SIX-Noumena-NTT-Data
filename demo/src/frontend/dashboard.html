@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Wealth Advisory Dashboard — Sarah Meier, RM</title>
+<style>
+:root {
+  --bg: #0a0f1e;
+  --surface: #111827;
+  --surface2: #1a2438;
+  --border: #1e3a5f;
+  --accent: #3b82f6;
+  --accent2: #6366f1;
+  --gold: #f59e0b;
+  --green: #10b981;
+  --red: #ef4444;
+  --orange: #f97316;
+  --text: #e2e8f0;
+  --muted: #64748b;
+  --card: #131f35;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+}
+/* Layout */
+.shell { display: flex; min-height: 100vh; }
+.sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  display: flex; flex-direction: column;
+  position: fixed; top: 0; left: 0; height: 100vh;
+  overflow-y: auto;
+}
+.main {
+  margin-left: 260px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+/* Sidebar */
+.sidebar-header {
+  padding: 20px 16px 16px;
+  border-bottom: 1px solid var(--border);
+}
+.sidebar-logo {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 4px;
+}
+.sidebar-rm {
+  font-size: 13px;
+  color: var(--muted);
+}
+.sidebar-rm strong { color: var(--text); }
+.sidebar-section {
+  padding: 12px 16px 4px;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+.client-btn {
+  display: flex; align-items: center; gap: 10px;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  border-left: 3px solid transparent;
+  cursor: pointer;
+  text-align: left;
+  color: var(--text);
+  transition: all 0.15s;
+}
+.client-btn:hover { background: var(--surface2); }
+.client-btn.active {
+  background: rgba(59,130,246,0.12);
+  border-left-color: var(--accent);
+}
+.client-avatar {
+  width: 32px; height: 32px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-weight: 700; font-size: 12px;
+  flex-shrink: 0;
+}
+.client-info { flex: 1; min-width: 0; }
+.client-name { font-weight: 600; font-size: 13px; }
+.client-sub { font-size: 11px; color: var(--muted); }
+.badge {
+  font-size: 10px; font-weight: 700;
+  padding: 2px 6px; border-radius: 99px;
+  background: var(--red);
+  color: #fff;
+}
+.badge.green { background: var(--green); }
+.badge.amber { background: var(--gold); color: #000; }
+/* Top bar */
+.topbar {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 14px 28px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.topbar-title { font-size: 18px; font-weight: 700; }
+.topbar-sub { font-size: 12px; color: var(--muted); margin-top: 2px; }
+.btn {
+  padding: 8px 16px;
+  border-radius: 6px;
+  border: none;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--accent); color: #fff; }
+.btn-primary:hover { background: #2563eb; }
+.btn-primary:disabled { background: var(--muted); cursor: not-allowed; }
+.btn-ghost { background: var(--surface2); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { background: var(--border); }
+.btn-green { background: var(--green); color: #fff; }
+.btn-red { background: var(--red); color: #fff; }
+.btn-sm { padding: 5px 10px; font-size: 12px; }
+/* Content */
+.content { padding: 24px 28px; flex: 1; }
+/* Cards */
+.card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 20px;
+  margin-bottom: 16px;
+}
+.card-header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 14px;
+}
+.card-title {
+  font-size: 13px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--muted);
+}
+.card-badge {
+  font-size: 11px; font-weight: 600;
+  padding: 2px 8px; border-radius: 99px;
+}
+.pill-red { background: rgba(239,68,68,0.15); color: #f87171; border: 1px solid rgba(239,68,68,0.3); }
+.pill-green { background: rgba(16,185,129,0.15); color: #34d399; border: 1px solid rgba(16,185,129,0.3); }
+.pill-amber { background: rgba(245,158,11,0.15); color: #fbbf24; border: 1px solid rgba(245,158,11,0.3); }
+.pill-blue { background: rgba(59,130,246,0.15); color: #60a5fa; border: 1px solid rgba(59,130,246,0.3); }
+.pill-purple { background: rgba(99,102,241,0.15); color: #a5b4fc; border: 1px solid rgba(99,102,241,0.3); }
+/* Grid */
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+/* DNA */
+.dna-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+.dna-item { background: var(--surface2); border-radius: 8px; padding: 12px; }
+.dna-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 6px; }
+.dna-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.chip {
+  font-size: 11px;
+  padding: 3px 8px;
+  border-radius: 99px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--text);
+}
+.chip-red { background: rgba(239,68,68,0.1); border-color: rgba(239,68,68,0.25); color: #fca5a5; }
+.chip-green { background: rgba(16,185,129,0.1); border-color: rgba(16,185,129,0.25); color: #6ee7b7; }
+.chip-blue { background: rgba(59,130,246,0.1); border-color: rgba(59,130,246,0.25); color: #93c5fd; }
+.chip-gold { background: rgba(245,158,11,0.1); border-color: rgba(245,158,11,0.25); color: #fcd34d; }
+/* Life events */
+.life-event {
+  display: flex; gap: 12px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--border);
+}
+.life-event:last-child { border-bottom: none; }
+.le-date { font-size: 11px; color: var(--muted); white-space: nowrap; min-width: 80px; }
+.le-body {}
+.le-type { font-size: 11px; font-weight: 600; color: var(--accent); margin-bottom: 2px; }
+.le-desc { font-size: 12px; }
+.le-impact { font-size: 11px; color: var(--muted); margin-top: 2px; font-style: italic; }
+/* Key quote */
+.quote {
+  border-left: 3px solid var(--accent);
+  padding: 6px 12px;
+  margin: 6px 0;
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+}
+/* Alert card */
+.alert-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 14px;
+  overflow: hidden;
+}
+.alert-header {
+  display: flex; align-items: flex-start; gap: 14px;
+  padding: 16px 18px;
+  background: rgba(239,68,68,0.05);
+  border-bottom: 1px solid var(--border);
+}
+.alert-header.opportunity {
+  background: rgba(16,185,129,0.05);
+}
+.alert-header.mandate {
+  background: rgba(245,158,11,0.05);
+}
+.alert-icon { font-size: 20px; flex-shrink: 0; margin-top: 2px; }
+.alert-hl { font-size: 14px; font-weight: 600; line-height: 1.4; margin-bottom: 4px; }
+.alert-meta { font-size: 11px; color: var(--muted); }
+.alert-meta span { margin-right: 12px; }
+.alert-body { padding: 14px 18px; }
+.alert-summary { font-size: 12px; color: #94a3b8; margin-bottom: 12px; line-height: 1.6; }
+/* Conflict box */
+.conflict-box {
+  background: rgba(239,68,68,0.07);
+  border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.conflict-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #f87171; font-weight: 700; margin-bottom: 4px; }
+.conflict-text { font-size: 12px; }
+.conflict-dna { font-size: 11px; color: var(--muted); margin-top: 4px; }
+/* Swap box */
+.swap-box {
+  background: rgba(59,130,246,0.07);
+  border: 1px solid rgba(59,130,246,0.2);
+  border-radius: 8px;
+  padding: 12px;
+  margin-bottom: 10px;
+}
+.swap-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: #60a5fa; font-weight: 700; margin-bottom: 8px; }
+.swap-arrow {
+  display: flex; align-items: center; gap: 10px;
+  margin-bottom: 8px;
+}
+.swap-from { padding: 6px 10px; border-radius: 6px; background: rgba(239,68,68,0.1); border: 1px solid rgba(239,68,68,0.2); font-size: 12px; }
+.swap-to { padding: 6px 10px; border-radius: 6px; background: rgba(16,185,129,0.1); border: 1px solid rgba(16,185,129,0.2); font-size: 12px; }
+.swap-rationale { font-size: 11px; color: #94a3b8; margin-top: 4px; }
+.swap-mandate {
+  display: flex; align-items: center; gap: 6px;
+  font-size: 11px; color: #34d399; margin-top: 6px;
+}
+/* Message draft */
+.msg-box {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  overflow: hidden;
+}
+.msg-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+.msg-subject { font-size: 12px; font-weight: 600; }
+.msg-badges { display: flex; gap: 6px; align-items: center; }
+.msg-body {
+  padding: 14px;
+  font-size: 12px;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  max-height: 280px;
+  overflow-y: auto;
+  color: #cbd5e1;
+}
+.msg-actions {
+  display: flex; gap: 8px;
+  padding: 10px 14px;
+  border-top: 1px solid var(--border);
+  background: var(--surface);
+}
+/* Holdings table */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; font-size: 12px; }
+th { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--border); color: var(--muted); font-size: 10px; text-transform: uppercase; letter-spacing: 0.06em; font-weight: 600; }
+td { padding: 7px 10px; border-bottom: 1px solid rgba(30,58,95,0.4); }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(59,130,246,0.04); }
+.td-name { font-weight: 500; }
+.td-num { text-align: right; font-variant-numeric: tabular-nums; }
+.pos { color: var(--green); }
+.neg { color: var(--red); }
+.neutral { color: var(--muted); }
+/* Loading */
+.spinner {
+  display: inline-block;
+  width: 18px; height: 18px;
+  border: 2px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+.loading-state {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 60px 20px;
+  gap: 14px;
+  color: var(--muted);
+}
+.loading-state .spinner { width: 32px; height: 32px; }
+/* Empty state */
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+.empty-icon { font-size: 40px; margin-bottom: 12px; }
+/* Stats strip */
+.stats-strip {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 20px;
+}
+.stat-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 14px 16px;
+}
+.stat-label { font-size: 10px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--muted); margin-bottom: 4px; }
+.stat-value { font-size: 22px; font-weight: 700; }
+.stat-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+/* Confidence bar */
+.conf-bar-bg { background: var(--surface2); border-radius: 4px; height: 6px; margin-top: 6px; }
+.conf-bar { height: 6px; border-radius: 4px; background: linear-gradient(to right, var(--accent), var(--green)); }
+/* Audit trail */
+.audit-step {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 8px 0;
+}
+.audit-num {
+  width: 22px; height: 22px; border-radius: 50%;
+  background: var(--accent); color: #fff;
+  font-size: 11px; font-weight: 700;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0; margin-top: 1px;
+}
+.audit-content {}
+.audit-title { font-size: 12px; font-weight: 600; }
+.audit-detail { font-size: 11px; color: var(--muted); }
+/* Tabs */
+.tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--border); margin-bottom: 20px; }
+.tab-btn {
+  padding: 8px 16px; background: none; border: none; border-bottom: 2px solid transparent;
+  cursor: pointer; font-size: 13px; color: var(--muted); font-weight: 500;
+  margin-bottom: -1px;
+  transition: all 0.15s;
+}
+.tab-btn.active { color: var(--text); border-bottom-color: var(--accent); }
+.tab-btn:hover { color: var(--text); }
+.tab-panel { display: none; }
+.tab-panel.active { display: block; }
+/* Tooltip-like annotation */
+.annotation {
+  display: inline-block;
+  background: rgba(99,102,241,0.15);
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 4px;
+  padding: 2px 7px;
+  font-size: 10px;
+  color: #a5b4fc;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+}
+/* Welcome / empty screen */
+.welcome {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: calc(100vh - 60px);
+  padding: 40px;
+  text-align: center;
+}
+.welcome h2 { font-size: 24px; font-weight: 700; margin-bottom: 8px; }
+.welcome p { color: var(--muted); max-width: 440px; margin-bottom: 24px; }
+.welcome-clients { display: flex; gap: 12px; flex-wrap: wrap; justify-content: center; }
+.welcome-card {
+  background: var(--card); border: 1px solid var(--border); border-radius: 10px;
+  padding: 16px 20px; cursor: pointer; width: 180px; text-align: left;
+  transition: all 0.15s;
+}
+.welcome-card:hover { border-color: var(--accent); background: var(--surface2); }
+.wc-name { font-weight: 700; margin-bottom: 4px; }
+.wc-mandate { font-size: 11px; color: var(--muted); margin-bottom: 8px; }
+.wc-trigger { font-size: 11px; color: #f87171; }
+</style>
+</head>
+<body>
+<div class="shell">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="sidebar-header">
+      <div class="sidebar-logo">Wealth Advisory</div>
+      <div class="sidebar-rm">RM: <strong>Sarah Meier</strong></div>
+    </div>
+    <div class="sidebar-section">Clients (4)</div>
+    <div id="client-list"></div>
+  </aside>
+
+  <!-- Main -->
+  <div class="main">
+    <div class="topbar">
+      <div>
+        <div class="topbar-title" id="page-title">Select a client</div>
+        <div class="topbar-sub" id="page-sub">SwissHacks 2026 — AI-Assisted Wealth Advisory</div>
+      </div>
+      <div style="display:flex;gap:8px;align-items:center">
+        <button class="btn btn-ghost btn-sm" onclick="clearAndRefresh()" id="btn-refresh" style="display:none">↺ Refresh</button>
+        <button class="btn btn-primary" onclick="runAnalysis()" id="btn-analyze" style="display:none">▶ Analyse Client</button>
+      </div>
+    </div>
+
+    <div class="content" id="content">
+      <!-- Welcome screen -->
+      <div class="welcome" id="welcome-screen">
+        <div style="font-size:48px;margin-bottom:16px">🏦</div>
+        <h2>Good morning, Sarah.</h2>
+        <p>Select a client to see their AI-generated investment DNA, live market alerts, and personalised advisory drafts.</p>
+        <div class="welcome-clients" id="welcome-clients"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+let activeClientId = null;
+let lastResult = null;
+
+const CLIENT_META = {
+  schneider: { color: '#3b82f6', initials: 'HS', trigger: '⚠ Roche neuro R&D closure', mandate: 'Balanced', lang: 'de' },
+  raeber:    { color: '#8b5cf6', initials: 'ER', trigger: '⚠ CIO mandate conflict',     mandate: 'Defensive', lang: 'de' },
+  huber:     { color: '#10b981', initials: 'MH', trigger: '✨ Palm oil deforestation win', mandate: 'Defensive', lang: 'en' },
+  ammann:    { color: '#f59e0b', initials: 'JA', trigger: '⚠ Labour scandal in portfolio', mandate: 'Growth', lang: 'en' },
+};
+
+async function loadClients() {
+  try {
+    const r = await fetch(`${API}/api/clients`);
+    const j = await r.json();
+    const clients = j.data || [];
+    renderSidebar(clients);
+    renderWelcome(clients);
+  } catch(e) {
+    document.getElementById('client-list').innerHTML = '<div style="padding:16px;color:#ef4444">Error loading clients</div>';
+  }
+}
+
+function renderSidebar(clients) {
+  const el = document.getElementById('client-list');
+  el.innerHTML = clients.map(c => {
+    const m = CLIENT_META[c.id] || {};
+    const alertClass = c.id === 'huber' ? 'green' : 'badge';
+    const alertLabel = c.id === 'huber' ? '✨' : '!';
+    return `<button class="client-btn" id="btn-${c.id}" onclick="selectClient('${c.id}')">
+      <div class="client-avatar" style="background:${m.color}20;color:${m.color}">${m.initials||c.name[0]}</div>
+      <div class="client-info">
+        <div class="client-name">${c.fullName}</div>
+        <div class="client-sub">${c.mandate} · CHF ${(c.totalAUM/1e6).toFixed(0)}M</div>
+      </div>
+      <span class="${alertClass} ${c.id==='huber'?'green':''}">${alertLabel}</span>
+    </button>`;
+  }).join('');
+}
+
+function renderWelcome(clients) {
+  const el = document.getElementById('welcome-clients');
+  el.innerHTML = clients.map(c => {
+    const m = CLIENT_META[c.id] || {};
+    return `<div class="welcome-card" onclick="selectClient('${c.id}')">
+      <div class="wc-name">${c.fullName}</div>
+      <div class="wc-mandate">${c.mandate} · CHF ${(c.totalAUM/1e6).toFixed(0)}M</div>
+      <div class="wc-trigger">${m.trigger||''}</div>
+    </div>`;
+  }).join('');
+}
+
+function selectClient(id) {
+  activeClientId = id;
+  document.querySelectorAll('.client-btn').forEach(b => b.classList.remove('active'));
+  const btn = document.getElementById(`btn-${id}`);
+  if (btn) btn.classList.add('active');
+
+  const meta = CLIENT_META[id] || {};
+  document.getElementById('page-title').textContent = `Client: ${getFullName(id)}`;
+  document.getElementById('page-sub').textContent = `${meta.mandate || ''} Mandate · AI Analysis Ready`;
+  document.getElementById('btn-analyze').style.display = 'block';
+  document.getElementById('btn-refresh').style.display = 'none';
+
+  document.getElementById('content').innerHTML = `
+    <div class="empty-state">
+      <div class="empty-icon">📋</div>
+      <div style="font-size:16px;font-weight:600;margin-bottom:8px">${getFullName(id)}</div>
+      <div style="color:var(--muted);margin-bottom:20px">${meta.mandate || ''} Mandate · ${meta.trigger || ''}</div>
+      <button class="btn btn-primary" onclick="runAnalysis()">▶ Run AI Analysis</button>
+    </div>`;
+}
+
+function getFullName(id) {
+  const names = { schneider: 'Hubertus Schneider', raeber: 'Eugen & Lisa Räber', huber: 'Marius & Elena Huber', ammann: 'Julian Ammann' };
+  return names[id] || id;
+}
+
+async function runAnalysis() {
+  if (!activeClientId) return;
+  const btn = document.getElementById('btn-analyze');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner" style="width:14px;height:14px;vertical-align:middle"></span> Analysing…';
+
+  document.getElementById('content').innerHTML = `
+    <div class="loading-state">
+      <div class="spinner"></div>
+      <div style="font-size:15px;font-weight:600">Running AI Analysis</div>
+      <div style="color:var(--muted);font-size:13px">Extracting DNA · Enriching portfolio · Fetching news · Detecting conflicts · Drafting messages</div>
+    </div>`;
+
+  try {
+    const r = await fetch(`${API}/api/clients/${activeClientId}/analysis`, { method: 'POST' });
+    const j = await r.json();
+    if (!j.success) throw new Error(j.error || 'Analysis failed');
+    lastResult = j.data;
+    renderDashboard(j.data);
+    document.getElementById('btn-refresh').style.display = 'block';
+  } catch(e) {
+    document.getElementById('content').innerHTML = `<div class="empty-state"><div class="empty-icon">⚠️</div><div style="color:var(--red)">${e.message}</div></div>`;
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = '▶ Analyse Client';
+  }
+}
+
+function clearAndRefresh() {
+  if (!activeClientId) return;
+  selectClient(activeClientId);
+}
+
+// ── Main render ───────────────────────────────────────────────────────────────
+function renderDashboard(data) {
+  const conflicts = data.conflicts || [];
+  const swaps = data.suggestedSwaps || [];
+  const msgs = data.draftMessages || [];
+  const alerts = data.alerts || [];
+  const opp = alerts.filter(a => a.alertType === 'opportunity');
+
+  const html = `
+    <!-- Stats strip -->
+    <div class="stats-strip">
+      <div class="stat-card">
+        <div class="stat-label">Portfolio AUM</div>
+        <div class="stat-value">CHF ${fmtM(data.portfolioTotalCHF)}</div>
+        <div class="stat-sub">${(data.holdings||[]).filter(h=>h.isin).length} holdings</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">DNA Confidence</div>
+        <div class="stat-value" style="color:var(--green)">${Math.round((data.dna?.confidence||0)*100)}%</div>
+        <div class="conf-bar-bg"><div class="conf-bar" style="width:${Math.round((data.dna?.confidence||0)*100)}%"></div></div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Alerts</div>
+        <div class="stat-value" style="color:${alerts.length>0?'var(--red)':'var(--green)'}">
+          ${conflicts.length > 0 ? conflicts.length : opp.length}
+        </div>
+        <div class="stat-sub">${conflicts.length > 0 ? conflicts.length + ' conflict' + (conflicts.length>1?'s':'') : opp.length + ' opportunit' + (opp.length===1?'y':'ies')}</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Drafts Ready</div>
+        <div class="stat-value" style="color:var(--accent)">${msgs.length}</div>
+        <div class="stat-sub">pending RM review</div>
+      </div>
+    </div>
+
+    <!-- Tabs -->
+    <div class="tabs">
+      <button class="tab-btn active" onclick="switchTab('dna')">🧬 Client DNA</button>
+      <button class="tab-btn" onclick="switchTab('alerts')">🚨 Alerts & Actions</button>
+      <button class="tab-btn" onclick="switchTab('portfolio')">📊 Portfolio</button>
+      <button class="tab-btn" onclick="switchTab('audit')">🔍 Audit Trail</button>
+    </div>
+
+    <!-- DNA Tab -->
+    <div class="tab-panel active" id="tab-dna">
+      ${renderDNA(data.dna, data.clientId)}
+    </div>
+
+    <!-- Alerts Tab -->
+    <div class="tab-panel" id="tab-alerts">
+      ${renderAlerts(alerts, conflicts, swaps, msgs, data)}
+    </div>
+
+    <!-- Portfolio Tab -->
+    <div class="tab-panel" id="tab-portfolio">
+      ${renderPortfolio(data.holdings || [])}
+    </div>
+
+    <!-- Audit Tab -->
+    <div class="tab-panel" id="tab-audit">
+      ${renderAudit(data)}
+    </div>
+  `;
+
+  document.getElementById('content').innerHTML = html;
+}
+
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+  document.querySelector(`.tab-btn[onclick="switchTab('${name}')"]`).classList.add('active');
+  document.getElementById(`tab-${name}`).classList.add('active');
+}
+
+// ── DNA Panel ─────────────────────────────────────────────────────────────────
+function renderDNA(dna, clientId) {
+  if (!dna) return '<div class="empty-state">No DNA extracted</div>';
+
+  const le = (dna.lifeEvents || []).map(e => `
+    <div class="life-event">
+      <div class="le-date">${e.date}</div>
+      <div class="le-body">
+        <div class="le-type">${capitalize(e.type.replace(/_/g,' '))}</div>
+        <div class="le-desc">${e.description}</div>
+        <div class="le-impact">${e.portfolioImpact}</div>
+      </div>
+    </div>`).join('');
+
+  const quotes = (dna.keyQuotes || []).map(q => `<div class="quote">"${q}"</div>`).join('');
+
+  return `
+    <div class="grid-2">
+      <div>
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Investment Values</div>
+            <span class="card-badge pill-blue">Extracted from CRM</span>
+          </div>
+          <div class="dna-grid">
+            <div class="dna-item">
+              <div class="dna-label">Priorities</div>
+              <div class="dna-chips">${(dna.values?.priorities||[]).map(p=>`<span class="chip chip-blue">${p}</span>`).join('')}</div>
+            </div>
+            <div class="dna-item">
+              <div class="dna-label">Red Lines</div>
+              <div class="dna-chips">${(dna.values?.redLines||[]).map(p=>`<span class="chip chip-red">${p}</span>`).join('') || '<span style="color:var(--muted);font-size:11px">None stated</span>'}</div>
+            </div>
+            <div class="dna-item">
+              <div class="dna-label">Preferred Sectors</div>
+              <div class="dna-chips">${(dna.values?.preferredSectors||[]).map(p=>`<span class="chip chip-green">${p}</span>`).join('') || '<span style="color:var(--muted);font-size:11px">None stated</span>'}</div>
+            </div>
+            <div class="dna-item">
+              <div class="dna-label">ESG Focus</div>
+              <div class="dna-chips">${(dna.values?.esgFocus||[]).map(p=>`<span class="chip chip-gold">${p}</span>`).join('') || '<span style="color:var(--muted);font-size:11px">None stated</span>'}</div>
+            </div>
+          </div>
+          <div class="dna-item" style="margin-top:0">
+            <div class="dna-label">Communication Style</div>
+            <div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">
+              <span class="annotation">LANG: ${(dna.communicationStyle?.language||'en').toUpperCase()}</span>
+              <span class="annotation">${(dna.communicationStyle?.preferred||'').toUpperCase()}</span>
+              <span class="annotation">${(dna.communicationStyle?.tone||'').toUpperCase()}</span>
+              ${dna.communicationStyle?.formatPreference ? `<span class="annotation">${dna.communicationStyle.formatPreference}</span>` : ''}
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Investment Behaviour</div>
+          </div>
+          <div class="dna-grid">
+            <div class="dna-item">
+              <div class="dna-label">Risk Tolerance</div>
+              <div style="font-weight:600;margin-top:4px;text-transform:capitalize">${dna.investmentBehavior?.riskTolerance||''}</div>
+            </div>
+            <div class="dna-item">
+              <div class="dna-label">Mandate</div>
+              <div style="font-weight:600;margin-top:4px">${dna.investmentBehavior?.mandate||''}</div>
+            </div>
+            <div class="dna-item">
+              <div class="dna-label">Time Horizon</div>
+              <div style="font-size:12px;margin-top:4px">${dna.investmentBehavior?.timeHorizon||''}</div>
+            </div>
+            <div class="dna-item">
+              <div class="dna-label">Liquidity</div>
+              <div style="font-size:12px;margin-top:4px">${dna.investmentBehavior?.liquidity||''}</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        ${dna.lifeEvents?.length > 0 ? `
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Life Events</div>
+            <span class="card-badge pill-red">Portfolio impact</span>
+          </div>
+          ${le}
+        </div>` : ''}
+
+        <div class="card">
+          <div class="card-header">
+            <div class="card-title">Key Quotes from CRM</div>
+            <span class="card-badge pill-purple">Sources: entries ${(dna.sourcedFrom||[]).slice(0,5).join(', ')}</span>
+          </div>
+          ${quotes || '<div style="color:var(--muted);font-size:12px">No quotes extracted</div>'}
+        </div>
+      </div>
+    </div>`;
+}
+
+// ── Alerts & Actions ──────────────────────────────────────────────────────────
+function renderAlerts(alerts, conflicts, swaps, msgs, data) {
+  if (alerts.length === 0) return '<div class="empty-state"><div class="empty-icon">✅</div><div>No alerts detected for this client</div></div>';
+
+  return alerts.map(alert => {
+    const relConflicts = conflicts.filter(c => c.alert?.id === alert.id);
+    const relSwaps = swaps.filter(s => relConflicts.some(c => c.id === s.conflict?.id));
+    const relMsgs = msgs.filter(m => relSwaps.some(s => s.id === m.swapId) || (alert.alertType === 'opportunity' && m.swapId.startsWith('opp')));
+
+    const isOpp = alert.alertType === 'opportunity';
+    const isMand = alert.alertType === 'mandate_conflict';
+    const headerClass = isOpp ? 'opportunity' : isMand ? 'mandate' : '';
+    const icon = isOpp ? '🌟' : isMand ? '⚠️' : '🚨';
+
+    return `
+    <div class="alert-card">
+      <div class="alert-header ${headerClass}">
+        <div class="alert-icon">${icon}</div>
+        <div style="flex:1">
+          <div class="alert-hl">${alert.headline}</div>
+          <div class="alert-meta">
+            <span>📰 ${alert.source}</span>
+            <span>📅 ${fmtDate(alert.publishedAt)}</span>
+            <span class="card-badge ${alert.sentiment==='positive'?'pill-green':alert.sentiment==='negative'?'pill-red':'pill-amber'}">${alert.sentiment.toUpperCase()}</span>
+            <span class="card-badge pill-blue">Relevance: ${Math.round(alert.relevanceScore*100)}%</span>
+            ${alert.isMock ? '<span class="annotation">DEMO TRIGGER</span>' : ''}
+          </div>
+        </div>
+      </div>
+      <div class="alert-body">
+        <div class="alert-summary">${alert.summary}</div>
+
+        ${relConflicts.map(c => `
+          <div class="conflict-box">
+            <div class="conflict-label">⚡ Conflict Detected — ${c.conflictType.toUpperCase()}</div>
+            <div class="conflict-text">${c.explanation}</div>
+            <div class="conflict-dna">DNA field: <code style="color:#a5b4fc">${c.dnaField}</code> → "${c.dnaValue}"</div>
+          </div>`).join('')}
+
+        ${isOpp ? `
+          <div class="conflict-box" style="background:rgba(16,185,129,0.07);border-color:rgba(16,185,129,0.2)">
+            <div class="conflict-label" style="color:#34d399">✨ Opportunity — Positive Alignment</div>
+            <div class="conflict-text">This holding is acting in direct alignment with the client's stated values. No rebalancing required — this is a moment to celebrate with the client.</div>
+            ${alert.affectedISINs.length > 0 ? `<div class="conflict-dna">Affected: ${(data.holdings||[]).filter(h=>alert.affectedISINs.includes(h.isin)).map(h=>h.name).join(', ')}</div>` : ''}
+          </div>` : ''}
+
+        ${relSwaps.map(s => renderSwap(s)).join('')}
+
+        ${relMsgs.length > 0 ? `
+          <div style="margin-top:10px">
+            <div class="swap-label" style="margin-bottom:6px">✉ DRAFT MESSAGE (PENDING RM REVIEW)</div>
+            ${relMsgs.map(m => renderMessage(m, data)).join('')}
+          </div>` : ''}
+
+        ${isOpp && msgs.length > 0 && relMsgs.length === 0 ? `
+          <div style="margin-top:10px">
+            <div class="swap-label" style="margin-bottom:6px">✉ DRAFT MESSAGE (PENDING RM REVIEW)</div>
+            ${msgs.filter(m=>m.swapId.startsWith('opp')).map(m => renderMessage(m, data)).join('')}
+          </div>` : ''}
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function renderSwap(s) {
+  if (!s.fromISIN && !s.toISIN) {
+    return `<div class="swap-box" style="background:rgba(245,158,11,0.07);border-color:rgba(245,158,11,0.2)">
+      <div class="swap-label" style="color:#fbbf24">⚠ MANDATE CONFLICT — NO SWAP RECOMMENDED</div>
+      <div class="swap-rationale">${s.cioView}</div>
+      <div class="swap-rationale" style="margin-top:6px;color:#fbbf24">${s.mandateNote}</div>
+    </div>`;
+  }
+  return `<div class="swap-box">
+    <div class="swap-label">🔄 PROPOSED SWAP (CIO BUY LIST)</div>
+    <div class="swap-arrow">
+      <div class="swap-from">✕ ${s.fromName}<br><span style="font-size:10px;color:var(--muted)">${s.fromISIN} · CHF ${fmtNum(s.fromCurrentCHF)}</span></div>
+      <div style="color:var(--accent);font-size:18px">→</div>
+      <div class="swap-to">✓ ${s.toName}<br><span style="font-size:10px;color:var(--muted)">${s.toISIN} · Rating: ${s.cioRating}</span></div>
+    </div>
+    <div class="swap-rationale">CIO View: ${s.cioView}</div>
+    <div class="swap-mandate">✓ ${s.mandateNote}</div>
+  </div>`;
+}
+
+function renderMessage(m, data) {
+  const flagMap = { de: '🇨🇭', en: '🇬🇧' };
+  return `<div class="msg-box" id="msg-${m.id}">
+    <div class="msg-header">
+      <div class="msg-subject">${m.subject}</div>
+      <div class="msg-badges">
+        <span class="annotation">${flagMap[m.language]||''} ${m.language.toUpperCase()}</span>
+        <span class="annotation">${(m.style||'').toUpperCase()}</span>
+        <span class="card-badge pill-amber">PENDING REVIEW</span>
+      </div>
+    </div>
+    <div class="msg-body">${escHtml(m.content)}</div>
+    <div class="msg-actions">
+      <button class="btn btn-green btn-sm" onclick="approveMsg('${m.id}','${data.clientId}')">✓ Approve & Send</button>
+      <button class="btn btn-red btn-sm" onclick="rejectMsg('${m.id}','${data.clientId}')">✕ Reject</button>
+      <button class="btn btn-ghost btn-sm" onclick="editMsg('${m.id}')">✎ Edit</button>
+    </div>
+  </div>`;
+}
+
+// ── Portfolio ─────────────────────────────────────────────────────────────────
+function renderPortfolio(holdings) {
+  const equities = holdings.filter(h => h.isin && h.assetClass === 'Equities');
+  const others = holdings.filter(h => h.isin && h.assetClass !== 'Equities');
+  return `
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Equity Holdings</div>
+        <span class="card-badge pill-blue">${equities.length} positions</span>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <tr><th>Issuer</th><th>Sector</th><th>Sub-Class</th><th class="td-num">Current CHF</th><th class="td-num">Weight %</th><th class="td-num">Price</th><th class="td-num">Chg %</th><th>Source</th></tr>
+          ${equities.map(h => {
+            const chgClass = (h.priceChangePercent||0) > 0 ? 'pos' : (h.priceChangePercent||0) < 0 ? 'neg' : 'neutral';
+            return `<tr>
+              <td class="td-name">${h.name}</td>
+              <td>${h.industryGroup||''}</td>
+              <td style="color:var(--muted)">${h.subAssetClass||''}</td>
+              <td class="td-num">${fmtNum(h.currentCHF)}</td>
+              <td class="td-num">${h.portfolioWeight.toFixed(1)}%</td>
+              <td class="td-num">${h.currentPrice ? fmtNum(h.currentPrice) : '—'}</td>
+              <td class="td-num ${chgClass}">${h.priceChangePercent != null ? (h.priceChangePercent>0?'+':'')+h.priceChangePercent.toFixed(2)+'%' : '—'}</td>
+              <td><span class="annotation" style="font-size:9px">${h.priceSource}</span></td>
+            </tr>`;
+          }).join('')}
+        </table>
+      </div>
+    </div>
+    ${others.length > 0 ? `<div class="card">
+      <div class="card-header"><div class="card-title">Bonds, Real Estate & Alternatives</div><span class="card-badge pill-purple">${others.length} positions</span></div>
+      <div class="table-wrap"><table>
+        <tr><th>Issuer</th><th>Asset Class</th><th class="td-num">Current CHF</th><th class="td-num">Weight %</th></tr>
+        ${others.map(h => `<tr>
+          <td class="td-name">${h.name}</td>
+          <td>${h.assetClass} / ${h.subAssetClass||''}</td>
+          <td class="td-num">${fmtNum(h.currentCHF)}</td>
+          <td class="td-num">${h.portfolioWeight.toFixed(1)}%</td>
+        </tr>`).join('')}
+      </table></div>
+    </div>` : ''}`;
+}
+
+// ── Audit Trail ───────────────────────────────────────────────────────────────
+function renderAudit(data) {
+  const dna = data.dna || {};
+  const conflicts = data.conflicts || [];
+  const swaps = data.suggestedSwaps || [];
+  const msgs = data.draftMessages || [];
+  const steps = [
+    {
+      title: 'CRM Analysis → Client DNA',
+      detail: `${(data.holdings||[]).length ? '' : ''}Analysed ${dna.sourcedFrom?.length||0} CRM entries spanning 3 years. Confidence: ${Math.round((dna.confidence||0)*100)}%. Language: ${dna.communicationStyle?.language||'?'}. Style: ${dna.communicationStyle?.preferred||'?'}. Red lines identified: ${(dna.values?.redLines||[]).length}.`
+    },
+    {
+      title: 'Portfolio Enrichment (SIX MCP + Yahoo Finance)',
+      detail: `Enriched ${(data.holdings||[]).filter(h=>h.isin).length} holdings. Live prices from SIX: ${(data.holdings||[]).filter(h=>h.priceSource==='SIX').length}. Yahoo Finance: ${(data.holdings||[]).filter(h=>h.priceSource==='Yahoo').length}. Stored values: ${(data.holdings||[]).filter(h=>h.priceSource==='stored').length}.`
+    },
+    {
+      title: 'News Monitoring (Event Registry + Demo Triggers)',
+      detail: `${data.alerts?.length||0} alerts generated. ${(data.alerts||[]).filter(a=>a.isMock).length} demo trigger event(s). ${(data.alerts||[]).filter(a=>!a.isMock).length} real news article(s). Highest relevance: ${Math.round(Math.max(...(data.alerts||[]).map(a=>a.relevanceScore||0))*100)||0}%.`
+    },
+    {
+      title: 'Conflict Detection (Deterministic Rules)',
+      detail: `${conflicts.length} conflict(s) detected. ${conflicts.filter(c=>c.severity==='high').length} high severity. ${conflicts.filter(c=>c.conflictType==='values').length} values conflict(s), ${conflicts.filter(c=>c.conflictType==='mandate').length} mandate conflict(s), ${conflicts.filter(c=>c.conflictType==='reputation').length} reputation conflict(s). No LLM involved — deterministic rules only.`
+    },
+    {
+      title: 'Swap Resolution (CIO BUY List Whitelist)',
+      detail: `${swaps.length} swap proposal(s). ${swaps.filter(s=>s.mandateCompliant).length} mandate-compliant. All candidates filtered from CIO BUY-rated instruments only. No non-BUY instruments suggested. Mandate drift rule: ±2.0pp.`
+    },
+    {
+      title: 'Message Drafting (Phoeniqs LLM)',
+      detail: `${msgs.length} advisory draft(s) generated. Language: ${msgs.map(m=>m.language.toUpperCase()).join(', ')||'N/A'}. Style: ${msgs.map(m=>m.style).join(', ')||'N/A'}. All messages are pending RM review — client never sees AI-generated content directly.`
+    },
+  ];
+
+  return `<div class="card">
+    <div class="card-header">
+      <div class="card-title">End-to-End Audit Trail</div>
+      <span class="card-badge pill-blue">Generated ${fmtDate(data.generatedAt)} · ${data.durationMs}ms</span>
+    </div>
+    ${steps.map((s, i) => `
+      <div class="audit-step">
+        <div class="audit-num">${i+1}</div>
+        <div class="audit-content">
+          <div class="audit-title">${s.title}</div>
+          <div class="audit-detail">${s.detail}</div>
+        </div>
+      </div>`).join('<hr style="border:none;border-top:1px solid var(--border);margin:4px 0">')}
+  </div>
+  <div class="card" style="margin-top:0">
+    <div class="card-header"><div class="card-title">CRM Evidence Used</div></div>
+    ${(dna.keyQuotes||[]).map((q,i) => `<div class="quote">[Entry ${(dna.sourcedFrom||[])[i]||'?'}] "${q}"</div>`).join('') || '<div style="color:var(--muted);font-size:12px">No quotes extracted</div>'}
+  </div>`;
+}
+
+// ── Message actions ───────────────────────────────────────────────────────────
+async function approveMsg(msgId, clientId) {
+  try {
+    const swap = (lastResult?.suggestedSwaps||[]).find(s => (lastResult?.draftMessages||[]).find(m => m.id === msgId && m.swapId === s.id));
+    await fetch(`${API}/api/clients/${clientId}/approve`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ swapId: swap?.id, messageId: msgId })
+    });
+    const box = document.getElementById(`msg-${msgId}`);
+    if (box) {
+      box.style.opacity = '0.6';
+      box.querySelector('.msg-actions').innerHTML = '<span style="color:var(--green);font-weight:600">✓ Approved — Queued for execution</span>';
+    }
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+async function rejectMsg(msgId, clientId) {
+  const reason = prompt('Reason for rejection (optional):') || '';
+  try {
+    const swap = (lastResult?.suggestedSwaps||[]).find(s => (lastResult?.draftMessages||[]).find(m => m.id === msgId && m.swapId === s.id));
+    await fetch(`${API}/api/clients/${clientId}/reject`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ swapId: swap?.id, reason })
+    });
+    const box = document.getElementById(`msg-${msgId}`);
+    if (box) {
+      box.style.opacity = '0.4';
+      box.querySelector('.msg-actions').innerHTML = '<span style="color:var(--red);font-weight:600">✕ Rejected</span>';
+    }
+  } catch(e) { alert('Error: ' + e.message); }
+}
+
+function editMsg(msgId) {
+  const body = document.querySelector(`#msg-${msgId} .msg-body`);
+  if (!body) return;
+  const current = body.innerText;
+  body.contentEditable = true;
+  body.style.outline = '1px solid var(--accent)';
+  body.focus();
+  const actions = document.querySelector(`#msg-${msgId} .msg-actions`);
+  const saveBtn = document.createElement('button');
+  saveBtn.className = 'btn btn-primary btn-sm';
+  saveBtn.textContent = '💾 Save';
+  saveBtn.onclick = () => { body.contentEditable = false; body.style.outline = ''; actions.removeChild(saveBtn); };
+  actions.appendChild(saveBtn);
+}
+
+// ── Helpers ───────────────────────────────────────────────────────────────────
+function fmtNum(n) { if (!n && n !== 0) return '—'; return Math.round(n).toLocaleString('de-CH'); }
+function fmtM(n) { if (!n) return '—'; return (n/1e6).toFixed(2)+'M'; }
+function fmtDate(s) { if (!s) return '—'; try { return new Date(s).toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}); } catch { return s; } }
+function capitalize(s) { return s ? s.charAt(0).toUpperCase()+s.slice(1) : ''; }
+function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+loadClients();
+</script>
+</body>
+</html>

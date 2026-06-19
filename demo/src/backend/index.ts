@@ -7,6 +7,7 @@ import cors from "cors";
 import helmet from "helmet";
 import morgan from "morgan";
 import analysisRoutes from "./routes/analysis.routes";
+import clientsRoutes from "./routes/clients.routes";
 
 const app = express();
 const port = parseInt(process.env.PORT || "3000", 10);
@@ -19,6 +20,7 @@ app.use(morgan("dev"));
 app.use(express.json());
 
 app.use("/api/analysis", analysisRoutes);
+app.use("/api/clients", clientsRoutes);
 
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString() });
@@ -29,7 +31,9 @@ app.use(express.static(path.join(__dirname, "../frontend")));
 app.listen(port, () => {
   console.log(`[Server] Running on http://localhost:${port}`);
   console.log(`[Server] Frontend at http://localhost:${port}`);
-  console.log(`[Server] API at http://localhost:${port}/api/analysis`);
+  console.log(`[Server] Legacy API at http://localhost:${port}/api/analysis`);
+  console.log(`[Server] Clients API at http://localhost:${port}/api/clients`);
+  console.log(`[Server] Dashboard at http://localhost:${port}/dashboard.html`);
 });
 
 export default app;

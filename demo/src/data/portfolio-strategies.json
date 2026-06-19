@@ -1,0 +1,156 @@
+[
+  {
+    "Asset Class": "Equities",
+    "Sub-Asset Class": "Domestic (CHF)",
+    "Benchmark / Index Reference": "SPI (Swiss Performance Index)",
+    "Def %": 6.8,
+    "Balanced %": 10,
+    "Growth %": 12,
+    "Def (CHF)": 680000,
+    "Balanced (CHF)": 1000000,
+    "Growth (CHF)": 1200000
+  },
+  {
+    "Asset Class": "Equities",
+    "Sub-Asset Class": "Foreign (Dev. Markets)",
+    "Benchmark / Index Reference": "MSCI World ex-CH (USD/EUR)",
+    "Def %": 12.7,
+    "Balanced %": 34.5,
+    "Growth %": 57.5,
+    "Def (CHF)": 1270000,
+    "Balanced (CHF)": 3450000,
+    "Growth (CHF)": 5750000
+  },
+  {
+    "Asset Class": "Equities",
+    "Sub-Asset Class": "Emerging Markets",
+    "Benchmark / Index Reference": "MSCI Emerging Markets (USD)",
+    "Def %": 2,
+    "Balanced %": 5.5,
+    "Growth %": 5.5,
+    "Def (CHF)": 200000,
+    "Balanced (CHF)": 550000,
+    "Growth (CHF)": 550000
+  },
+  {
+    "Asset Class": "Fixed Income",
+    "Sub-Asset Class": "Domestic Bonds (CHF)",
+    "Benchmark / Index Reference": "SBI Domestic AAA-BBB (CHF)",
+    "Def %": 22,
+    "Balanced %": 11.5,
+    "Growth %": 3,
+    "Def (CHF)": 2200000,
+    "Balanced (CHF)": 1150000,
+    "Growth (CHF)": 300000
+  },
+  {
+    "Asset Class": "Fixed Income",
+    "Sub-Asset Class": "Foreign Bonds (G7)",
+    "Benchmark / Index Reference": "Bloomberg Global Aggregate Swiss Franc Hedged Index",
+    "Def %": 37,
+    "Balanced %": 20,
+    "Growth %": 6,
+    "Def (CHF)": 3700000,
+    "Balanced (CHF)": 2000000,
+    "Growth (CHF)": 600000
+  },
+  {
+    "Asset Class": "Fixed Income",
+    "Sub-Asset Class": "Emerging Market Bonds",
+    "Benchmark / Index Reference": "JPM EMBI Global Diversified",
+    "Def %": 1,
+    "Balanced %": 2,
+    "Growth %": 0.5,
+    "Def (CHF)": 100000,
+    "Balanced (CHF)": 200000,
+    "Growth (CHF)": 50000
+  },
+  {
+    "Asset Class": "Real Estate",
+    "Sub-Asset Class": "Swiss Real Estate",
+    "Benchmark / Index Reference": "SXI Real Estate Funds (CHF)",
+    "Def %": 2.5,
+    "Balanced %": 2,
+    "Growth %": 1,
+    "Def (CHF)": 250000,
+    "Balanced (CHF)": 200000,
+    "Growth (CHF)": 100000
+  },
+  {
+    "Asset Class": "Real Estate",
+    "Sub-Asset Class": "Global Listed REITs",
+    "Benchmark / Index Reference": "FTSE EPRA Nareit Developed",
+    "Def %": 2,
+    "Balanced %": 3,
+    "Growth %": 4,
+    "Def (CHF)": 200000,
+    "Balanced (CHF)": 300000,
+    "Growth (CHF)": 400000
+  },
+  {
+    "Asset Class": "Alternatives",
+    "Sub-Asset Class": "Cryptocurrencies\t",
+    "Benchmark / Index Reference": "Nasdaq Crypto Index (NCI)",
+    "Def %": 0,
+    "Balanced %": 0,
+    "Growth %": 1.5,
+    "Def (CHF)": 0,
+    "Balanced (CHF)": 0,
+    "Growth (CHF)": 150000
+  },
+  {
+    "Asset Class": "Alternatives",
+    "Sub-Asset Class": "Private Markets",
+    "Benchmark / Index Reference": "LPX 50 Listed Private Equity",
+    "Def %": 2,
+    "Balanced %": 3.5,
+    "Growth %": 5.5,
+    "Def (CHF)": 200000,
+    "Balanced (CHF)": 350000,
+    "Growth (CHF)": 550000
+  },
+  {
+    "Asset Class": "Alternatives",
+    "Sub-Asset Class": "Commodities / Gold",
+    "Benchmark / Index Reference": "LBMA Gold Price (CHF)",
+    "Def %": 7.5,
+    "Balanced %": 5,
+    "Growth %": 1.5,
+    "Def (CHF)": 750000,
+    "Balanced (CHF)": 500000,
+    "Growth (CHF)": 150000
+  },
+  {
+    "Asset Class": "Liquidity",
+    "Sub-Asset Class": "Cash & Money Market",
+    "Benchmark / Index Reference": "SARON / Swiss 3M LIBOR",
+    "Def %": 4.5,
+    "Balanced %": 3,
+    "Growth %": 2,
+    "Def (CHF)": 450000,
+    "Balanced (CHF)": 300000,
+    "Growth (CHF)": 200000
+  },
+  {
+    "Asset Class": "TOTAL",
+    "Sub-Asset Class": "GLOBAL MANDATE",
+    "Benchmark / Index Reference": "MULTI-ASSET COMPOSITE",
+    "Def %": 100,
+    "Balanced %": 100,
+    "Growth %": 100,
+    "Def (CHF)": 10000000,
+    "Balanced (CHF)": 10000000,
+    "Growth (CHF)": 10000000
+  },
+  {
+    "Asset Class": "Target amount",
+    "Sub-Asset Class": 10000000,
+    "Benchmark / Index Reference": "",
+    "Def %": "",
+    "Balanced %": "",
+    "Growth %": "",
+    "Def (CHF)": "",
+    "Balanced (CHF)": "",
+    "Growth (CHF)": ""
+  }
+]
