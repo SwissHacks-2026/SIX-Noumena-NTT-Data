@@ -131,8 +131,8 @@ Data conventions for the portfolio workbook: all amounts are in CHF; ISINs follo
 |---|---|---|---|
 | SIX | Ramiro Lopez Cento | ramiro.lopez@six-group.com | MCP |
 | SIX | Laurent Lefevre | laurent.lefevre@six-group.com | webAPI, MCP |
-| SIX | Jennifer Chang | jennifer.chang@six-group.com | Coordination |
-| SIX | Magdalena Tuta | magdalena.tuta@six-group.com | Coordination, Pitch Training |
+| SIX | Jennifer Chang | jennifer.chang@six-group.com | Coordination, Careers, Pitch Coaching | 
+| SIX | Magdalena Tuta | magdalena.tuta1@six-group.com | Coordination, Pitch Coaching |
 | NTT DATA | Thomas Geiger | thomas.geiger@nttdata.com | Wealth Management Expert, Personas, Business Case |
 | NTT DATA / Phoeniqs | Stefan Taroni | stefan.taroni@phoenix-technologies.ch | Tech / LLM Infrastructure & Credits |
 | Noumena Digital | Sandra Daub | sandra@noumenadigital.com | Wealth Management Expert, Personas, Business Case |
